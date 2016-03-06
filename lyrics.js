@@ -40,23 +40,36 @@
 				}
 			}
 			if (!result.length) {
-				throw 'Invalid LRC string.';
+				throw 'Failed to parse LRC string.';
 			} else {
 				result.sort(function(a,b){return (a.timestamp > b.timestamp ? 1 : -1);});
 				return result;
 			}
 		}
 		var json_lrc = parse(text_lrc);
+		var timestamp_offset = 0;
 
-		this.select = function(timestamp){
-			if (!json_lrc) {return undefined;}
+		this.getTimeOffset = function() {
+			return timestamp_offset;
+		}
+		this.setTimeOffset = function(offset) {
+			if (isNaN(offset)) {
+				throw 'Invalid offset.';
+			}
+			timestamp_offset = Number(offset);
+		}
+		this.select = function(ts){
+			if (isNaN(ts)) {
+				throw 'Invalid timestamp.';
+			}
+			var timestamp = Number(ts) + timestamp_offset;
 			var i = 0;
-			if (Number(timestamp) < json_lrc[0].timestamp) {
+			if (timestamp < json_lrc[0].timestamp) {
 				return -1;
 			}
 			for (i = 0; i < (json_lrc.length - 1); i++) {
-				if (json_lrc[i].timestamp <= Number(timestamp)
-					&& json_lrc[i+1].timestamp > Number(timestamp)) {
+				if (json_lrc[i].timestamp <= timestamp
+					&& json_lrc[i+1].timestamp > timestamp) {
 					break;
 				}
 			}
@@ -85,11 +98,11 @@
 			}
 		}
 		this.sync = function(timestamp){
-			if (!lyrics_container || !json_lrc) {
-				return undefined;
+			if (!lyrics_container) {
+				throw 'Element for lyrics container is not specified using Lyrics.bind(elem).';
 			}
 			var idx_next = this.select(timestamp);
-			if (idx_next < 0 || (idx_now !== undefined && idx_next == idx_now)) {
+			if (idx_now !== undefined && idx_next == idx_now) {
 				return false;
 			}
 
@@ -99,9 +112,11 @@
 			if (lrc_elem) {
 				lrc_elem.removeAttribute('selected');
 			}
-			lrc_elem = lyrics_container.querySelector('.lyric[idx="'+idx_next+'"]');
-			if (lrc_elem) {
-				lrc_elem.setAttribute('selected', 'selected');
+			if (idx_next >= 0) {
+				lrc_elem = lyrics_container.querySelector('.lyric[idx="'+idx_next+'"]');
+				if (lrc_elem) {
+					lrc_elem.setAttribute('selected', 'selected');
+				}
 			}
 			return idx_now;
 		}

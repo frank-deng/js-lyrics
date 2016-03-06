@@ -21,6 +21,7 @@
 
 		<!--使用HTML5 audio标签播放音乐 Play music using HTML5 audio element-->
 		<audio id='audio_player' controls='controls' src='demo.mp3'></audio>
+		<p><input type='button' id='lyric_faster' value='+0.5s'/><input type='button' id='lyric_slower' value='-0.5s'/></p>
 
 		<!--显示歌词用的目标容器 Target element used as lyrics container-->
 		<div id='lyrics_container'></div>
@@ -29,7 +30,6 @@
 	<script type='text/javascript'>
 /* 使用JQuery加载歌词 Use JQuery to load lyrics file */
 $.get('demo.lrc', function(lrc_text){
-
 	/* 建立处理.lrc文件的对象 Create the object used to handle .lrc file */
 	var lyrics = new Lyrics(lrc_text);
 
@@ -41,6 +41,20 @@ $.get('demo.lrc', function(lrc_text){
 	document.getElementById('audio_player').addEventListener('timeupdate', function(){
 		lyrics.sync(this.currentTime);
 	});
+
+	/* 将歌词提前或延后 Adjust time offset of lyrics */
+	document.getElementById('lyric_faster').onclick = function(){
+		if (lyrics) {
+			lyrics.setTimeOffset(lyrics.getTimeOffset() + 0.5);
+			console.log(lyrics.getTimeOffset());
+		}
+	}
+	document.getElementById('lyric_slower').onclick = function(){
+		if (lyrics) {
+			lyrics.setTimeOffset(lyrics.getTimeOffset() - 0.5);
+			console.log(lyrics.getTimeOffset());
+		}
+	}
 });
 	</script>
 </html>

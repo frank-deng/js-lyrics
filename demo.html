@@ -4,15 +4,15 @@
 		<meta charset='UTF-8'/>
 		<title>Demo of lyrics.js</title>
 		<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script type='text/javascript' src='lyrics.min.js'></script>
+		<script type='text/javascript' src='lyrics.js'></script>
 		<style type='text/css'>
-#lyrics_container .lyric{
+#lyrics_container p{
 	margin:0 2px;
 	padding:0;
 }
 
 /* 高亮的歌词以粗体显示 Highlighted lyrics will be displayed in bold font */
-#lyrics_container .lyric[selected]{
+#lyrics_container p[selected]{
 	font-weight:bold;
 }
 		</style>
@@ -21,7 +21,6 @@
 
 		<!--使用HTML5 audio标签播放音乐 Play music using HTML5 audio element-->
 		<audio id='audio_player' controls='controls' src='demo.mp3'></audio>
-		<p><input type='button' id='lyric_faster' value='+0.5s'/><input type='button' id='lyric_slower' value='-0.5s'/></p>
 
 		<!--显示歌词用的目标容器 Target element used as lyrics container-->
 		<div id='lyrics_container'></div>
@@ -30,31 +29,27 @@
 	<script type='text/javascript'>
 /* 使用JQuery加载歌词 Use JQuery to load lyrics file */
 $.get('demo.lrc', function(lrc_text){
-	/* 建立处理.lrc文件的对象 Create the object used to handle .lrc file */
-	var lyrics = new Lyrics(lrc_text);
-
-	/* 将显示歌词用的目标容器清空，然后向目标容器中添加歌词 Clear contents in the target element first, then add lyrics into the target element */
-	lyrics.bind(document.getElementById('lyrics_container'));
-
-	/* 目标容器中的歌词和audio标签同步 Synchrononize lyrics in the target container with audio element */
-	/* 被选定的歌词会被加上selected属性表示高亮 Selected lyric will have 'selected' attribute added for highlighting */
-	document.getElementById('audio_player').addEventListener('timeupdate', function(){
-		lyrics.sync(this.currentTime);
+	var lyrics_container = document.getElementById('lyrics_container');
+	Lyrics.parse(lrc_text, function(idx, timestamp, text){
+		var lyric_element = document.createElement('p');
+		lyric_element.setAttribute('idx', idx);
+		lyric_element.setAttribute('timestamp', timestamp);
+		lyric_element.innerHTML = text;
+		lyrics_container.appendChild(lyric_element);
 	});
-
-	/* 将歌词提前或延后 Adjust time offset of lyrics */
-	document.getElementById('lyric_faster').onclick = function(){
-		if (lyrics) {
-			lyrics.setTimeOffset(lyrics.getTimeOffset() + 0.5);
-			console.log(lyrics.getTimeOffset());
+	var lyrics_all = lyrics_container.getElementsByTagName('p');
+	document.getElementById('audio_player').addEventListener('timeupdate', function(){
+		var lyric_selected = lyrics_container.querySelectorAll('[selected]');
+		for (var i = 0; i < lyric_selected.length; i++) {
+			lyric_selected[i].removeAttribute('selected');
 		}
-	}
-	document.getElementById('lyric_slower').onclick = function(){
-		if (lyrics) {
-			lyrics.setTimeOffset(lyrics.getTimeOffset() - 0.5);
-			console.log(lyrics.getTimeOffset());
+		var lyric_selected = Lyrics.select(this.currentTime, lyrics_all, function(e){
+			return Number(e.getAttribute('timestamp'));
+		});
+		if (lyric_selected) {
+			lyric_selected.setAttribute('selected', 'selected');
 		}
-	}
+	});
 });
 	</script>
 </html>

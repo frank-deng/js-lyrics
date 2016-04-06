@@ -1,8 +1,8 @@
 (function(){
 	var isBrowser = function(){try {return this===window;}catch(e){ return false;}}
 	var _root = isBrowser() ? window : global;
-	_root.Lyrics = function(text_lrc){
-		var parse = function(text_lrc){
+	_root.Lyrics = {
+		parse : function(text_lrc, handler){
 			var convertTimestamp = function(src) {
 				var match = /^\[(\d{1,2}):(\d{1,2})(\.(\d{1,2}))?\]$/g.exec(src);
 				if (!match) {
@@ -16,6 +16,10 @@
 					timestamp += (millsec / 100);
 				}
 				return timestamp;
+			}
+
+			if (!handler) {
+				handler = function(){};
 			}
 
 			var lines_all = text_lrc.split('\n');
@@ -43,41 +47,30 @@
 				throw 'Failed to parse LRC string.';
 			} else {
 				result.sort(function(a,b){return (a.timestamp > b.timestamp ? 1 : -1);});
+				for (var i = 0; i < result.length; i++) {
+					handler.call(result, i, result[i].timestamp, result[i].text);
+				}
 				return result;
 			}
-		}
-		var json_lrc = parse(text_lrc);
-		var timestamp_offset = 0;
-
-		this.getTimeOffset = function() {
-			return timestamp_offset;
-		}
-		this.setTimeOffset = function(offset) {
-			if (isNaN(offset)) {
-				throw 'Invalid offset.';
-			}
-			timestamp_offset = Number(offset);
-		}
-		this.select = function(ts){
-			if (isNaN(ts)) {
+		},
+		select : function(timestamp, source, converter){
+			if (isNaN(timestamp)) {
 				throw 'Invalid timestamp.';
 			}
-			var timestamp = Number(ts) + timestamp_offset;
-			var i = 0;
-			if (timestamp < json_lrc[0].timestamp) {
-				return -1;
-			}
-			for (i = 0; i < (json_lrc.length - 1); i++) {
-				if (json_lrc[i].timestamp <= timestamp
-					&& json_lrc[i+1].timestamp > timestamp) {
-					break;
+			for (var i = 0; i < (source.length - 1); i++) {
+				var ts = (converter ? converter.call(source, source[i]) : source[i].timestamp);
+				var ts_next = (converter ? converter.call(source, source[i+1]) : source[i+1].timestamp);
+				if (i == 0 && timestamp < ts) {
+					return undefined;
+				} else if (ts <= timestamp && ts_next > timestamp) {
+					return source[i];
 				}
 			}
-			return i;
-		}
-		this.toJSON = function(){return json_lrc;}
+			return undefined;
+		},
 
 		/*The following are for browser use only, if NodeJS environment is detected, exit now.*/
+		/*
 		try {this===window;}catch(e){return;}
 
 		var lyrics_container = undefined;
@@ -120,5 +113,6 @@
 			}
 			return idx_now;
 		}
+		*/
 	}
 })();

@@ -70,15 +70,15 @@
 	}
 	Lyrics.select = function(timestamp, source, converter){
 		if (isNaN(timestamp)) {
-			throw 'Invalid timestamp.';
+			throw 'Invalid Timestamp';
 		}
 		for (var i = 0; i < source.length; i++) {
-			var ts = (typeof(converter) == 'function' ? converter.call(source, source[i]) : source[i].timestamp);
+			var ts = Number(typeof(converter) == 'function' ? converter.call(source, source[i]) : source[i].timestamp);
 			if (i < source.length - 1) {
-				var ts_next = (typeof(converter) == 'function' ? converter.call(source, source[i+1]) : source[i+1].timestamp);
+				var ts_next = Number(typeof(converter) == 'function' ? converter.call(source, source[i+1]) : source[i+1].timestamp);
 			}
 			if (i == 0 && timestamp < ts) {
-				return undefined;
+				return null;
 			} else if (i == (source.length - 1) && ts <= timestamp) {
 				return source[i];
 			} else if (ts <= timestamp && ts_next > timestamp) {

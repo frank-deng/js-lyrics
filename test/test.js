@@ -2,6 +2,9 @@ function htmlspecialchars(s){
 	var M={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
 	return s.replace(/[&<>"']/g,function(m){return M[m]});
 }
+function CustomError( message ) {
+	this.message = message;
+}
 QUnit.test("Basic Test", function(assert) {
 	assert.deepEqual(Lyrics.parse(document.getElementById('sample').innerHTML)[0], {timestamp:27.540,text:'Ah! ほのかな予感から始まり'});
 	assert.deepEqual(Lyrics.parse(document.getElementById('sample').innerHTML)[4], {timestamp:49.160,text:''});
@@ -83,6 +86,13 @@ QUnit.test("Select Lyric", function(assert) {
 	assert.deepEqual(Lyrics.select(272, lyric_data), {timestamp:271.52,text:'Ah! ほのかな予感から始まり'});
 	assert.deepEqual(Lyrics.select(278, lyric_data), {timestamp:277.41,text:'Ah! 光を追いかけてきたんだよ…'});
 	assert.deepEqual(Lyrics.select(300, lyric_data), {timestamp:288.41,text:''});
+	assert.raises(function(){
+		try {
+			Lyrics.select('s300al', lyric_data);
+		} catch (e) {
+			throw new CustomError(String(e));
+		}
+	}, /Invalid Timestamp/, 'Invalid Timestamp Test');
 });
 QUnit.test("Select Lyric From Dom", function(assert) {
 	var lyrics_container = document.getElementById('lyrics_container');
@@ -108,5 +118,12 @@ QUnit.test("Select Lyric From Dom", function(assert) {
 	assert.strictEqual(Lyrics.select(272, lyric_data, handler), lyric_data[37]);
 	assert.strictEqual(Lyrics.select(278, lyric_data, handler), lyric_data[38]);
 	assert.strictEqual(Lyrics.select(300, lyric_data, handler), lyric_data[39]);
+	assert.raises(function(){
+		try {
+			Lyrics.select('s300al', lyric_data, handler);
+		} catch (e) {
+			throw new CustomError(String(e));
+		}
+	}, /Invalid Timestamp/, 'Invalid Timestamp Test');
 });
 

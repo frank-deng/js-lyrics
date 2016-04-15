@@ -17,51 +17,40 @@
 		return this;
 	};
 	Lyrics.parse = function(text_lrc, handler){
-		var convertTimestamp = function(src) {
-			var match = /^\[(\d{1,2}):(\d{1,2})(\.(\d+))?\]$/g.exec(src);
-			if (!match) {
-				return undefined;
-			}
-			var minute = Number(match[1]);
-			var second = Number(match[2]);
-			var timestamp = minute * 60 + second;
-			if (match[4]){
-				timestamp += Number('0.'+match[4]);
-			}
-			return timestamp;
-		}
-
 		var result = new Array();
 		if (!text_lrc) {
 			return result;
 		}
-
 		var lines_all = String(text_lrc).split('\n');
 		for (var i = 0; i < lines_all.length; i++) {
 			var line = lines_all[i].replace(/(^\s*)|(\s*$)/g,'');
-			if (line.length > 0) {
-				var match = Array(line);
-				var timestamp_all = Array();
-				var text = '';
-				while (match) {
-					match = /^(\[\d+:\d+(.\d+)?\])(.*)/g.exec(match[match.length-1]);
-					if (match) {
-						timestamp_all.push(match[1]);
-						text = match[match.length-1];
-					}
+			if (!line) {
+				continue;
+			}
+			var timestamp_all = Array();
+			while (true) {
+				var match = /^(\[\d+:\d+(.\d+)?\])(.*)/g.exec(line);
+				if (match) {
+					timestamp_all.push(match[1]);
+					line = match[match.length-1].replace(/(^\s*)|(\s*$)/g,'');
+				} else {
+					break;
 				}
-				for (var j = 0; j < timestamp_all.length; j++) {
-					var timestamp = convertTimestamp(timestamp_all[j]);
-					if (timestamp !== undefined) {
-						result.push({timestamp:timestamp, text:text.replace(/(^\s*)|(\s*$)/g,'')});
-					}
+			}
+			for (var j = 0; j < timestamp_all.length; j++) {
+				var ts_match = /^\[(\d{1,2}):(\d|[0-5]\d)(\.(\d+))?\]$/g.exec(timestamp_all[j]);
+				if (ts_match) {
+					result.push({
+						timestamp:Number(ts_match[1])*60 + Number(ts_match[2]) + (ts_match[4] ? Number('0.'+ts_match[4]) : 0),
+						text:line
+					});
 				}
 			}
 		}
 		result.sort(function(a,b){
 			return (a.timestamp > b.timestamp ? 1 : -1);
 		});
-		if(typeof(handler) == 'function'){
+		if (typeof(handler) == 'function'){
 			for (var i = 0; i < result.length; i++) {
 					handler.call(result, result[i].timestamp, result[i].text);
 			}

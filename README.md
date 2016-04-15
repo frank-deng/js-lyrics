@@ -23,7 +23,7 @@ Usage
 
 * `timestamp`: Timestamp in seconds, used to determine which lyric to show. Decimal number is acceptable.
 * `lyrics_array`: Array contains elements of lyric data. Each element contains timestamp data which is extracted by function `time_handler`. Elements in the array must be sorted by timestamp data in ascending order.
-* `time_handler`: Function for extracting timestamp data from each lyric data in `lyrics_array`, which should return the timestamp value extracted in decimal number type. 
+* `time_handler`: Function for extracting timestamp data from each lyric data in `lyrics_array`, which should return the timestamp value extracted. 
 
 Example
 -------
@@ -56,4 +56,9 @@ Example
 			lyric_selected.setAttribute('selected', 'selected');
 		}
 	});
+
+Automated Testing
+-----------------
+
+You may launch `text.html` from `test/` folder to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
 

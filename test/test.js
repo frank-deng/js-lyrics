@@ -24,6 +24,18 @@ QUnit.test("Timestamp Parsing", function(assert) {
 	assert.deepEqual(Lyrics.parse('[2:00.02]ok')[0], {timestamp:120.02,text:'ok'});
 	assert.deepEqual(Lyrics.parse('[2:00.002]ok')[0], {timestamp:120.002,text:'ok'});
 	assert.deepEqual(Lyrics.parse('[2:00.1002]ok')[0], {timestamp:120.1002,text:'ok'});
+	assert.deepEqual(Lyrics.parse('[2:00.12] \t [2:10.12]ok'), [
+		{timestamp:120.12,text:'ok'},
+		{timestamp:130.12,text:'ok'},
+	]);
+	assert.deepEqual(Lyrics.parse('   [2:00.12]  [2:10.12]ok'), [
+		{timestamp:120.12,text:'ok'},
+		{timestamp:130.12,text:'ok'},
+	]);
+	assert.deepEqual(Lyrics.parse('   [2:00.12]  [2:10.12]   ok'), [
+		{timestamp:120.12,text:'ok'},
+		{timestamp:130.12,text:'ok'},
+	]);
 });
 QUnit.test("Text Parsing", function(assert) {
 	assert.equal(Lyrics.parse('[0:00.10]ok')[0].text, 'ok', "Normal text");
@@ -40,13 +52,16 @@ QUnit.test("Complex LRC Test", function(assert) {
 		"Complex LRC parsed OK."
 	);
 });
-QUnit.test("Abnormal data handling", function(assert) {
+QUnit.test("Filtering Invalid Data", function(assert) {
 	assert.strictEqual(Lyrics.parse().length, 0, "No Parameter." );
 	assert.strictEqual(Lyrics.parse('').length, 0, "Empty String." );
 	assert.strictEqual(Lyrics.parse(null).length, 0, "Null Provided." );
 	assert.strictEqual(Lyrics.parse(undefined).length, 0, "undefined Provided." );
 	assert.strictEqual(Lyrics.parse(2348).length, 0, "Number Provided." );
 	assert.strictEqual(Lyrics.parse(' \t ').length, 0, "String contains only spaces." );
+	assert.strictEqual(Lyrics.parse('[0:80.0]Invalid Timetamp').length, 0, "Invalid Timestamp" );
+	assert.strictEqual(Lyrics.parse('[0:80]Invalid Timetamp').length, 0, "Invalid Timestamp" );
+	assert.strictEqual(Lyrics.parse('[0:80.05]Invalid Timetamp').length, 0, "Invalid Timestamp" );
 	assert.deepEqual(Lyrics.parse(document.getElementById('abnormal').innerHTML), [{timestamp:190,text:'Normal'}], "Abnormal data filtered." );
 });
 QUnit.test("Custom hander", function(assert) {

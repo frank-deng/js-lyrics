@@ -30,46 +30,52 @@
 			}
 			return timestamp;
 		}
-		var lines_all = text_lrc.split('\n');
-		var result = Array();
+
+		var result = new Array();
+		if (!text_lrc) {
+			return result;
+		}
+
+		var lines_all = String(text_lrc).split('\n');
 		for (var i = 0; i < lines_all.length; i++) {
-			var line = lines_all[i].replace(/(^\s*)|(\s*$)/g, '');
+			var line = lines_all[i].replace(/(^\s*)|(\s*$)/g,'');
 			if (line.length > 0) {
 				var match = Array(line);
 				var timestamp_all = Array();
 				var text = '';
 				while (match) {
-					match = /^(\[\d+:\d+(\.\d+)?\])(.*)/g.exec(match[match.length-1]);
+					match = /^(\[\d+:\d+(.\d+)?\])(.*)/g.exec(match[match.length-1]);
 					if (match) {
 						timestamp_all.push(match[1]);
 						text = match[match.length-1];
 					}
 				}
 				for (var j = 0; j < timestamp_all.length; j++) {
-					result.push({timestamp:convertTimestamp(timestamp_all[j]), text:text});
+					var timestamp = convertTimestamp(timestamp_all[j]);
+					if (timestamp !== undefined) {
+						result.push({timestamp:timestamp, text:text.replace(/(^\s*)|(\s*$)/g,'')});
+					}
 				}
 			}
 		}
-		if (!result.length) {
-			return undefined;
-		} else {
-			result.sort(function(a,b){return (a.timestamp > b.timestamp ? 1 : -1);});
+		result.sort(function(a,b){
+			return (a.timestamp > b.timestamp ? 1 : -1);
+		});
+		if(typeof(handler) == 'function'){
 			for (var i = 0; i < result.length; i++) {
-				if (handler) {
 					handler.call(result, result[i].timestamp, result[i].text);
-				}
 			}
-			return result;
 		}
+		return result;
 	}
 	Lyrics.select = function(timestamp, source, converter){
 		if (isNaN(timestamp)) {
 			throw 'Invalid timestamp.';
 		}
 		for (var i = 0; i < source.length; i++) {
-			var ts = (converter ? converter.call(source, source[i]) : source[i].timestamp);
+			var ts = (typeof(converter) == 'function' ? converter.call(source, source[i]) : source[i].timestamp);
 			if (i < source.length - 1) {
-				var ts_next = (converter ? converter.call(source, source[i+1]) : source[i+1].timestamp);
+				var ts_next = (typeof(converter) == 'function' ? converter.call(source, source[i+1]) : source[i+1].timestamp);
 			}
 			if (i == 0 && timestamp < ts) {
 				return undefined;

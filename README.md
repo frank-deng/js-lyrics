@@ -60,5 +60,5 @@ Example
 Automated Testing
 -----------------
 
-You may launch `text.html` from `test/` folder to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
+You may launch `text.html` from `test/` folder using brwoser to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
 

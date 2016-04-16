@@ -24,6 +24,8 @@ QUnit.test("Timestamp Parsing", function(assert) {
 	assert.deepEqual(Lyrics.parse('[2:00.02]ok')[0], {timestamp:120.02,text:'ok'});
 	assert.deepEqual(Lyrics.parse('[2:00.002]ok')[0], {timestamp:120.002,text:'ok'});
 	assert.deepEqual(Lyrics.parse('[2:00.1002]ok')[0], {timestamp:120.1002,text:'ok'});
+	assert.deepEqual(Lyrics.parse('[1:59]ok')[0], {timestamp:119,text:'ok'});
+	assert.deepEqual(Lyrics.parse('[1:59.3]ok')[0], {timestamp:119.3,text:'ok'});
 	assert.deepEqual(Lyrics.parse('[2:00.12] \t [2:10.12]ok'), [
 		{timestamp:120.12,text:'ok'},
 		{timestamp:130.12,text:'ok'},
@@ -62,6 +64,8 @@ QUnit.test("Filtering Invalid Data", function(assert) {
 	assert.strictEqual(Lyrics.parse('[0:80.0]Invalid Timetamp').length, 0, "Invalid Timestamp" );
 	assert.strictEqual(Lyrics.parse('[0:80]Invalid Timetamp').length, 0, "Invalid Timestamp" );
 	assert.strictEqual(Lyrics.parse('[0:80.05]Invalid Timetamp').length, 0, "Invalid Timestamp" );
+	assert.strictEqual(Lyrics.parse('[0:60]Invalid Timetamp').length, 0, "Invalid Timestamp" );
+	assert.strictEqual(Lyrics.parse('[0:60.03]Invalid Timetamp').length, 0, "Invalid Timestamp" );
 	assert.deepEqual(Lyrics.parse(document.getElementById('abnormal').innerHTML), [{timestamp:190,text:'Normal'}], "Abnormal data filtered." );
 });
 QUnit.test("Custom hander", function(assert) {

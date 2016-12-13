@@ -1,44 +1,31 @@
 js-lyrics
 =========
 
-A JavaScript library handling LRC file.
+A JavaScript library for parsing LRC file, and select lyric to highlight.
+
 
 Usage
 -----
 
-### Loading In Browser
+### Parse the content of a `.lrc` file:
 
-	<script type="text/javascript" src="lyrics.min.js"></script>
+	var lrc = new Lyrics(LRC_text);
 
-### Parse .lrc File
+or
 
-	Lyrics.parse(text_lrc, handler);
+	lrc.load(LRC_text);	//This will replace the previous loaded lyrics.
 
-* `text_lrc`: Content of a .lrc file.
-* `handler`: Function used to process each pair of timestamp and lyric.
 
-### Get Lyric To Show
+### Select lyric to highlight 
 
-	Lyrics.select(timestamp, lyrics_array, time_handler);
+	Lyrics.select(time);
 
-* `timestamp`: Timestamp in seconds, used to determine which lyric to show. Decimal number is acceptable.
-* `lyrics_array`: Array contains elements of lyric data. Each element contains timestamp data which is extracted by function `time_handler`. Elements in the array must be sorted by timestamp data in ascending order.
-* `time_handler`: Function for extracting timestamp data from each lyric data in `lyrics_array`, which should return the timestamp value extracted. 
+This method will return -1 when the time is ahead the first lyric's time or time parameter is not a number.
 
-Example
--------
 
-	/** Parse .lrc file and put lyrics as well as timestamp data accordingly into HTML DOM. */
-	var lyrics_container = document.getElementById('lyrics_container');
-	Lyrics.parse(document.getElementById('text_lyrics').innerHTML, function(timestamp, text){
-		var lyric_element = document.createElement('p');
-		lyric_element.setAttribute('timestamp', timestamp);
-		lyric_element.innerHTML = text;
-		lyrics_container.appendChild(lyric_element);
-	});
+### Synchoronize lyrics with HTML5 audio element
 
-	/** Synchoronize lyrics with HTML5 audio element */
-	var lyrics_all = lyrics_container.getElementsByTagName('p');
+	var lrc = new Lyrics(LRC_text);
 	document.getElementById('audio_player').addEventListener('timeupdate', function(){
 		//Unhighlight all the lyrics
 		var lyric_selected = lyrics_container.querySelectorAll('[selected]');
@@ -47,18 +34,32 @@ Example
 		}
 
 		//Get the lyric to highlight
-		var lyric_selected = Lyrics.select(this.currentTime, lyrics_all, function(e){
-			return Number(e.getAttribute('timestamp'));
-		});
+		var lyric_selected = lrc.select(this.currentTime);
 
-		//Highlight the lyric if available
-		if (lyric_selected) {
+		//Highlight the lyric
+		if (lyric_selected != undefined && lyric_selected >= 0) {
 			lyric_selected.setAttribute('selected', 'selected');
 		}
 	});
 
-Automated Testing
------------------
+
+### Specify time offset
+
+Set time offset
+
+	Lyrics.setOffset(offset);
+
+Get time offset
+
+	Lyrics.getOffset();
+
+The time offset will be added to the value of `time` parameter when calling `Lyrics.select(time)` method.
+
+Once `Lyrics.load()` method is called, the time offset will be reset to 0.
+
+
+Test Cases
+----------
 
 You may launch `text.html` from `test/` folder using brwoser to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
 

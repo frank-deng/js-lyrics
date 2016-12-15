@@ -12,11 +12,13 @@ QUnit.test("Basic Test", function(assert) {
 	assert.strictEqual(lrcParser.getLyric(-1), undefined);
 	assert.strictEqual(lrcParser.getLyric(41), undefined);
 	assert.equal(lrcParser.getLyrics().length, 40);
+	assert.deepEqual(lrcParser.getIDTags(), {artist:'μ\'s',title:'僕たちはひどつの光'}, 'Parsing ID Tags');
 });
 QUnit.test("Timestamp Parsing", function(assert) {
 	var parser = new Lyrics();
 	parser.load('[0:0]ok');
 	assert.deepEqual(parser.getLyrics()[0], {timestamp:0,text:'ok'});
+	assert.deepEqual(parser.getIDTags(), undefined, 'No ID tags loaded');
 	parser.load('[0:00]ok');
 	assert.deepEqual(parser.getLyrics()[0], {timestamp:0,text:'ok'});
 	parser.load('[00:00]ok');
@@ -91,6 +93,7 @@ QUnit.test("Filtering Invalid Data", function(assert) {
 	var parser = new Lyrics();
 	assert.strictEqual(parser.load(), false, "LRC not loaded via load()." );
 	assert.strictEqual(parser.getLyrics(), undefined, "LRC not loaded via load()." );
+	assert.strictEqual(parser.getIDTags(), undefined, "LRC not loaded via load()." );
 	assert.strictEqual(parser.load(''), false, "Empty String." );
 	assert.strictEqual(parser.load(null), false, "Null Provided." );
 	assert.strictEqual(parser.load(undefined), false, "undefined Provided." );
@@ -101,8 +104,10 @@ QUnit.test("Filtering Invalid Data", function(assert) {
 	assert.strictEqual(parser.load('[0:80.05]Invalid Timetamp'), false, "Invalid Timestamp" );
 	assert.strictEqual(parser.load('[0:60]Invalid Timetamp'), false, "Invalid Timestamp" );
 	assert.strictEqual(parser.load('[0:60.03]Invalid Timetamp'), false, "Invalid Timestamp" );
+	assert.strictEqual(parser.load('[foo:bar]'), false, "Invalid ID Tag" );
 	assert.strictEqual(parser.load(document.getElementById('abnormal').innerHTML), true, 'LRC loaded via load()');
 	assert.deepEqual(parser.getLyrics(), [{timestamp:190,text:'Normal'}], "Abnormal data filtered." );
+	assert.deepEqual(parser.getIDTags(), {artist:'Artist',title:'Title'}, "Abnormal data filtered.");
 });
 QUnit.test("Select Lyric", function(assert) {
 	var lrc = new Lyrics(document.getElementById('sample').innerHTML);
@@ -127,24 +132,18 @@ QUnit.test("Select Lyric", function(assert) {
 	assert.deepEqual(lrc.getLyric(lrc.select(300)), {timestamp:288.41,text:''});
 	assert.strictEqual(lrc.select('s300al'), -1, 'Invalid Timestamp Test');
 });
-QUnit.test("Time Offset", function(assert) {
-	var lrc = new Lyrics(document.getElementById('sample').innerHTML);
-	assert.strictEqual(lrc.getTimeOffset(), 0, 'Default offset');
-	lrc.setTimeOffset(12.83);
-	assert.strictEqual(lrc.getTimeOffset(), 12.83);
-	lrc.setTimeOffset('asd12');
-	assert.strictEqual(lrc.getTimeOffset(), 0, 'Invalid Offset Provided');
-	lrc.setTimeOffset(0);
-	assert.deepEqual(lrc.select(35), 1);
-	lrc.setTimeOffset(-5);
-	assert.deepEqual(lrc.select(35), 0);
-	lrc.setTimeOffset(-30);
-	assert.deepEqual(lrc.select(35), -1);
-	lrc.setTimeOffset(4);
-	assert.deepEqual(lrc.select(35), 2);
-	lrc.setTimeOffset(9);
-	assert.deepEqual(lrc.select(35), 3);
-	lrc.load(document.getElementById('sample').innerHTML);
-	assert.deepEqual(lrc.getTimeOffset(), 0, 'Reset time offset when new file loaded');
+QUnit.test("ID Tag parsing", function(assert) {
+	var lrc = new Lyrics(document.getElementById('id_tags_only').innerHTML);
+	assert.deepEqual(lrc.getIDTags(), {
+		artist:'Lyrics artist',
+		album:'Album where the song is from',
+		title:'Lyrics (song) title',
+		author:'Creator of the Songtext',
+		length:'How long the song is',
+		by:'Creator of the [LRC] file',
+		offset:21,
+		createdBy:'The player or editor that created the LRC file',
+		createdByVersion:'v0.3.0',
+	});
+	assert.strictEqual(lrc.getLyrics(), undefined);
 });
-

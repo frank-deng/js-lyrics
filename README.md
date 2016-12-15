@@ -49,25 +49,10 @@ This method will return -1 when the time given is ahead the first lyric's time o
 	});
 
 
-### Specify time offset
-
-Set time offset:
-
-	Lyrics.setOffset(offset);
-
-Get time offset;
-
-	Lyrics.getOffset();
-
-The time offset will be added to the value of `time` parameter when calling `Lyrics.select(time)` method.
-
-Once `Lyrics.load()` method is called, the time offset will be reset to 0.
-
-
 Test Cases
 ----------
 
-You may launch `text.html` from `test/` folder using brwoser to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
+You may launch `text.html` and `test.min.html` from `test/` folder using brwoser to see the result of all the [QUnit](http://qunitjs.com/) based test cases.
 
 
 ---
@@ -124,23 +109,8 @@ js-lyrics
 	});
 
 
-### 设置时间偏移
-
-设置时间偏移量：
-
-	Lyrics.setOffset(offset);
-
-获取时间偏移量：
-
-	Lyrics.getOffset();
-
-当调用`Lyrics.select(time)`方法时，时间偏移量将被加到`time`参数的值上。
-
-当`Lyrics.load()`被调用时，即新歌词被加载时，时间偏移量将被重置为0.
-
-
 测试用例
 --------
 
-用浏览器打开`test/`目录下的`text.html`，可以查看[QUnit](http://qunitjs.com/)测试用例的运行结果。
+用浏览器打开`test/`目录下的`test.html`和`test.min.html`，可以查看[QUnit](http://qunitjs.com/)测试用例的运行结果。
 

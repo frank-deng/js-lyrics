@@ -3,18 +3,68 @@
 	var _root = isBrowser() ? window : global;
 	_root.Lyrics = function(text_lrc){
 		/* Private */
+		var _prototype = _root.Lyrics.prototype;
 		var timestamp_offset = 0;
 		var lyrics_all = undefined;
+		var meta_info = undefined;
+		var setTimestampOffset = function(offset){
+			timestamp_offset = isNaN(offset) ? 0 : Number(offset);
+			return timestamp_offset;
+		}
+		var isEmpty = function(obj) {
+			for(var prop in obj) {
+				if(obj.hasOwnProperty(prop)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		var ID_TAGS = [
+			{name:'artist',id:'ar'},
+			{name:'album',id:'al'},
+			{name:'title',id:'ti'},
+			{name:'author',id:'au'},
+			{name:'length',id:'length'},
+			{name:'by',id:'by'},
+			{name:'offset',id:'offset', handler:setTimestampOffset},
+			{name:'createdBy',id:'re'},
+			{name:'createdByVersion',id:'ve'},
+		];
 
-		_root.Lyrics.prototype.load = function(text_lrc){
+		_prototype.load = function(text_lrc){
 			lyrics_all = new Array();
+			meta_info = new Object();
 			timestamp_offset = 0;
+
 			var lines_all = String(text_lrc).split('\n');
 			for (var i = 0; i < lines_all.length; i++) {
 				var line = lines_all[i].replace(/(^\s*)|(\s*$)/g,'');
 				if (!line) {
 					continue;
 				}
+
+				//Parse ID Tags
+				var is_id_tag = false;
+				for (var j = 0; j < ID_TAGS.length; j++) {
+					var match = ID_TAGS[j].re.exec(line);
+					if (!match || match.length < 2) {
+						continue;
+					}
+
+					is_id_tag = true;
+					var value = match[1].replace(/(^\s*)|(\s*$)/g,'');
+					if (typeof ID_TAGS[j].handler == 'function') {
+						meta_info[String(ID_TAGS[j].name)] = ID_TAGS[j].handler.call(this, value);
+					} else {
+						meta_info[String(ID_TAGS[j].name)] = String(value);
+					}
+				}
+				console.log(meta_info);
+				if (is_id_tag) {
+					continue;
+				}
+
+				//Parse lyric
 				var timestamp_all = Array();
 				while (true) {
 					var match = /^(\[\d+:\d+(.\d+)?\])(.*)/g.exec(line);
@@ -35,35 +85,34 @@
 					}
 				}
 			}
+
 			lyrics_all.sort(function(a,b){
 				return (a.timestamp > b.timestamp ? 1 : -1);
 			});
-			if (lyrics_all.length) {
-				return true;
-			} else {
+			if (!lyrics_all.length) {
 				lyrics_all = undefined;
-				return false;
 			}
+			if (isEmpty(meta_info)) {
+				meta_info = undefined;
+			}
+			return (lyrics_all !== undefined || meta_info !== undefined) ? true : false;
 		}
 
 		/* Public */
-		_root.Lyrics.prototype.getLyrics = function(){
+		_prototype.getLyrics = function(){
 			return lyrics_all;
 		}
-		_root.Lyrics.prototype.getLyric = function(idx){
+		_prototype.getLyric = function(idx){
 			try{
 				return lyrics_all[idx];
 			}catch(e){
 				return undefined;
 			}
 		}
-		_root.Lyrics.prototype.getTimeOffset = function() {
-			return timestamp_offset;
+		_prototype.getIDTags = function(){
+			return meta_info;
 		}
-		_root.Lyrics.prototype.setTimeOffset = function(offset) {
-			timestamp_offset = isNaN(offset) ? 0 : Number(offset);
-		}
-		_root.Lyrics.prototype.select = function(ts){
+		_prototype.select = function(ts){
 			if (isNaN(ts)) {
 				return -1;
 			}
@@ -81,6 +130,10 @@
 			return i;
 		}
 
+		/* Initialization */
+		for (var i = 0; i < ID_TAGS.length; i++) {
+			ID_TAGS[i].re = new RegExp('\\['+ID_TAGS[i].id+':(.*)\\]$', 'g');
+		}
 		if (text_lrc) {
 			this.load(text_lrc);
 		}

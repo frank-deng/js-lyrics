@@ -147,3 +147,12 @@ QUnit.test("ID Tag parsing", function(assert) {
 	});
 	assert.strictEqual(lrc.getLyrics(), undefined);
 });
+QUnit.test("Test Time Offset", function(assert) {
+	var lrc = new Lyrics();
+	lrc.load(document.getElementById('test_time_offset_down').innerHTML);
+	assert.deepEqual(lrc.getLyric(lrc.select(1)), {timestamp:0.05,text:'One'});
+	assert.deepEqual(lrc.getIDTags(), {offset:-101});
+	lrc.load(document.getElementById('test_time_offset_up').innerHTML);
+	assert.deepEqual(lrc.getLyric(lrc.select(1)), {timestamp:2,text:'Three'});
+	assert.deepEqual(lrc.getIDTags(), {offset:1000});
+});

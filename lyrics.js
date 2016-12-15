@@ -8,8 +8,8 @@
 		var lyrics_all = undefined;
 		var meta_info = undefined;
 		var setTimestampOffset = function(offset){
-			timestamp_offset = isNaN(offset) ? 0 : Number(offset);
-			return timestamp_offset;
+			timestamp_offset = isNaN(offset) ? 0 : Number(offset) / 1000;
+			return Number(offset);
 		}
 		var isEmpty = function(obj) {
 			for(var prop in obj) {

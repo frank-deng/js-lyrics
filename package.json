@@ -1,0 +1,29 @@
+{
+  "name": "lyrics.js",
+  "version": "0.3.2",
+  "description": "A JavaScript for parsing LRC file and synchronize lyrics.",
+  "main": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+	"uglifyjs": "uglifyjs lyrics.js > lyrics.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frank-deng/js-lyrics.git"
+  },
+  "keywords": [
+    "LRC",
+    "lyrics",
+    "lyric"
+  ],
+  "author": "frank-deng",
+  "bugs": {
+    "url": "https://github.com/frank-deng/js-lyrics/issues"
+  },
+  "homepage": "https://github.com/frank-deng/js-lyrics#readme",
+  "devDependencies": {
+	"qunitjs": "^1.23.1"
+  }
+}

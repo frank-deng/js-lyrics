@@ -7,6 +7,17 @@ js-lyrics
 
 A JavaScript library for parsing LRC file, and select lyric to highlight.
 
+Install
+-------
+
+You can install via **_npm_**:
+
+	$ npm install lyrics.js
+
+Or via Git reporsitory:
+
+	$ git clone https://github.com/frank-deng/js-lyrics.git
+
 
 Usage
 -----
@@ -66,6 +77,17 @@ js-lyrics
 [English](#english) | [中文](#chinese)
 
 一个用于解析LRC文件的JavaScript库，也用于选择需要高亮的歌词。
+
+安装
+----
+
+使用**_npm_**安装：
+
+	$ npm install lyrics.js
+
+从Git仓库安装：
+
+	$ git clone https://github.com/frank-deng/js-lyrics.git
 
 
 用法

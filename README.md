@@ -32,6 +32,12 @@ Load `.lrc` file and replace previous loaded lyrics using the same parser object
 
 	lrc.load(LRC_text);
 
+**PS**: To specify time offset for `.lrc` file, please add the following tag into your `.lrc` file:
+
+	[offset:t]
+
+`t` is time offset in milliseconds, positive value to shift time up, negative value to shift time down.
+
 
 ### Select lyric to highlight 
 
@@ -102,6 +108,12 @@ js-lyrics
 加载`.lrc`文件中的内容，并替换之前加载的歌词：
 
 	lrc.load(LRC_text);
+
+**PS**：如果需要为`.lrc`指定时间偏移量，请在`.lrc`文件中加上如下标签：
+
+	[offset:t]
+
+`t`为时间偏移量，单位为毫秒，正数为延后，负数为提前。
 
 
 ### 选择需要高亮的歌词

@@ -1,13 +1,15 @@
 {
   "name": "lyrics.js",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A JavaScript for parsing LRC file and synchronize lyrics.",
   "main": "",
   "directories": {
     "test": "test"
   },
   "scripts": {
-	"uglifyjs": "uglifyjs lyrics.js > lyrics.min.js"
+	"uglifyjs": "uglifyjs lyrics.js > lyrics.min.js",
+	"test-uncompressed": "qunit-cli -c lyrics.js ./test/qunit_test.js",
+	"test": "qunit-cli -c lyrics.min.js ./test/qunit_test.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +24,10 @@
   "bugs": {
     "url": "https://github.com/frank-deng/js-lyrics/issues"
   },
+  "license": "MIT",
   "homepage": "https://github.com/frank-deng/js-lyrics#readme",
   "devDependencies": {
-	"qunitjs": "^1.23.1"
+    "qunit-cli": ""
   }
 }
+

@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width">
-		<title>Test lyrics.js</title>
-		<link rel="stylesheet" href="qunit-2.0.1.css">
-		<script src="../lyrics.js"></script>
-		<script id='sample' type='text/plain'>[ti:僕たちはひどつの光]
+sample = `[ti:僕たちはひどつの光]
 [ar: μ's ]
 [00:27.540]Ah! ほのかな予感から始まり
 [00:32.970]Ah! 希望が星空駈けて
@@ -47,8 +39,9 @@
 [04:30.500]
 [04:31.520]Ah! ほのかな予感から始まり
 [04:37.410]Ah! 光を追いかけてきたんだよ…
-[04:48.410]</script>
-		<script id='sample_complex' type='text/plain'>[00:27.540][04:31.520]Ah! ほのかな予感から始まり
+[04:48.410]
+`
+sample_complex = `[00:27.540][04:31.520]Ah! ほのかな予感から始まり
 [00:32.970]Ah! 希望が星空駈けて
 [00:38.450]花を咲かせるにっこり笑顔は
 [00:43.920]ずっと同じさ 友情の笑顔
@@ -77,8 +70,9 @@
 [03:08.560]夢の未来 君と僕のLIVE&LIFE
 [03:15.430][04:30.500][04:48.410]
 [04:18.670]だってだって、いまが最高!
-[04:37.410]Ah! 光を追いかけてきたんだよ…</script>
-		<script id='abnormal' type='text/plain'>[ar:Artist]
+[04:37.410]Ah! 光を追いかけてきたんだよ…
+`
+abnormal = `[ar:Artist]
 [ti:Title]
 [00:j7.540]alskdfjlasdkjflsakdjf
 [04:37:410]sadlkjfsadlkfj
@@ -86,8 +80,9 @@
 [03:100:00]asdlfkjasdf
 [03:10.00]Normal
 asldkfjalskdfj
-[sdl:lksajdf]asdlfkjasdf</script>
-		<script id='id_tags_only' type='text/plain'>[ar:Lyrics artist]
+[sdl:lksajdf]asdlfkjasdf
+`
+id_tags_only = `[ar:Lyrics artist]
 [al:  Album where the song is from]
 [ti:Lyrics (song) title  ]
 [au:   Creator of the Songtext   ]
@@ -97,8 +92,8 @@ asldkfjalskdfj
 [foo:bar]
 [re:The player or editor that created the LRC file]
 [ve:v0.3.0]
-		</script>
-		<script id='id_tags_lyrics' type='text/plain'>[ar:Lyrics artist]
+`
+id_tags_lyrics = `[ar:Lyrics artist]
 [al:  Album where the song is from]
 [ti:Lyrics (song) title  ]
 [au:   Creator of the Songtext   ]
@@ -108,32 +103,16 @@ asldkfjalskdfj
 [foo:bar]
 [re:The player or editor that created the LRC file]
 [ve:v0.3.0]
-		</script>
-		<script id='test_time_offset_down' type='text/plain'>[offset:-101]
+`
+test_time_offset_down = `[offset:-101]
 [00:00.050]One
 [00:01.000]Two
 [00:02.000]Three
-</script>
-		<script id='test_time_offset_up' type='text/plain'>[offset:1000]
+`
+test_time_offset_up = `[offset:1000]
 [00:00.050]One
 [00:01.000]Two
 [00:02.000]Three
-</script>
-	</head>
-	<body>
-		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
-		<div id='lyrics_container'></div>
-		<script>
-sample = document.getElementById('sample').innerHTML;
-sample_complex = document.getElementById('sample_complex').innerHTML;
-abnormal = document.getElementById('abnormal').innerHTML;
-id_tags_only = document.getElementById('id_tags_only').innerHTML;
-id_tags_lyrics = document.getElementById('id_tags_lyrics').innerHTML;
-test_time_offset_down = document.getElementById('test_time_offset_down').innerHTML;
-test_time_offset_up = document.getElementById('test_time_offset_up').innerHTML;
-		</script>
-		<script src="qunit-2.0.1.js"></script>
-		<script src="test.js"></script>
-	</body>
-</html>
+`
+require('./test.js');
+

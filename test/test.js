@@ -6,7 +6,7 @@ function CustomError( message ) {
 	this.message = message;
 }
 QUnit.test("Basic Test", function(assert) {
-	var lrcParser = new Lyrics(document.getElementById('sample').innerHTML);
+	var lrcParser = new Lyrics(sample);
 	assert.deepEqual(lrcParser.getLyric(0), {timestamp:27.540,text:'Ah! ほのかな予感から始まり'});
 	assert.deepEqual(lrcParser.getLyric(4), {timestamp:49.160,text:''});
 	assert.strictEqual(lrcParser.getLyric(-1), undefined);
@@ -79,8 +79,8 @@ QUnit.test("Text Parsing", function(assert) {
 	assert.equal(parser.getLyric(0).text, 'ok', "Normal text with space before timestamp");
 });
 QUnit.test("Complex LRC Test", function(assert) {
-	var lrc1 = new Lyrics(document.getElementById('sample').innerHTML);
-	var lrc2 = new Lyrics(document.getElementById('sample_complex').innerHTML);
+	var lrc1 = new Lyrics(sample);
+	var lrc2 = new Lyrics(sample_complex);
 	assert.deepEqual(
 		lrc1.getLyrics(),
 		lrc2.getLyrics(),
@@ -105,12 +105,12 @@ QUnit.test("Filtering Invalid Data", function(assert) {
 	assert.strictEqual(parser.load('[0:60]Invalid Timetamp'), false, "Invalid Timestamp" );
 	assert.strictEqual(parser.load('[0:60.03]Invalid Timetamp'), false, "Invalid Timestamp" );
 	assert.strictEqual(parser.load('[foo:bar]'), false, "Invalid ID Tag" );
-	assert.strictEqual(parser.load(document.getElementById('abnormal').innerHTML), true, 'LRC loaded via load()');
+	assert.strictEqual(parser.load(abnormal), true, 'LRC loaded via load()');
 	assert.deepEqual(parser.getLyrics(), [{timestamp:190,text:'Normal'}], "Abnormal data filtered." );
 	assert.deepEqual(parser.getIDTags(), {artist:'Artist',title:'Title'}, "Abnormal data filtered.");
 });
 QUnit.test("Select Lyric", function(assert) {
-	var lrc = new Lyrics(document.getElementById('sample').innerHTML);
+	var lrc = new Lyrics(sample);
 	assert.strictEqual(lrc.select(0), -1);
 	assert.strictEqual(lrc.select(0.1), -1);
 	assert.strictEqual(lrc.select(0.2), -1);
@@ -133,7 +133,7 @@ QUnit.test("Select Lyric", function(assert) {
 	assert.strictEqual(lrc.select('s300al'), -1, 'Invalid Timestamp Test');
 });
 QUnit.test("ID Tag parsing", function(assert) {
-	var lrc = new Lyrics(document.getElementById('id_tags_only').innerHTML);
+	var lrc = new Lyrics(id_tags_only);
 	assert.deepEqual(lrc.getIDTags(), {
 		artist:'Lyrics artist',
 		album:'Album where the song is from',
@@ -149,10 +149,10 @@ QUnit.test("ID Tag parsing", function(assert) {
 });
 QUnit.test("Test Time Offset", function(assert) {
 	var lrc = new Lyrics();
-	lrc.load(document.getElementById('test_time_offset_down').innerHTML);
+	lrc.load(test_time_offset_down);
 	assert.deepEqual(lrc.getLyric(lrc.select(1)), {timestamp:0.05,text:'One'});
 	assert.deepEqual(lrc.getIDTags(), {offset:-101});
-	lrc.load(document.getElementById('test_time_offset_up').innerHTML);
+	lrc.load(test_time_offset_up);
 	assert.deepEqual(lrc.getLyric(lrc.select(1)), {timestamp:2,text:'Three'});
 	assert.deepEqual(lrc.getIDTags(), {offset:1000});
 });

@@ -14,7 +14,7 @@
 	'use strict';
 	var Lyrics = function(text_lrc){
 		/* Private */
-		var _prototype = Lyrics.prototype;
+		var _proto = Lyrics.prototype;
 		var timestamp_offset = 0;
 		var lyrics_all = undefined;
 		var meta_info = undefined;
@@ -42,7 +42,7 @@
 			{name:'createdByVersion',id:'ve'},
 		];
 
-		_prototype.load = function(text_lrc){
+		_proto.load = function(text_lrc){
 			lyrics_all = new Array();
 			meta_info = new Object();
 			timestamp_offset = 0;
@@ -109,20 +109,20 @@
 		}
 
 		/* Public */
-		_prototype.getLyrics = function(){
+		_proto.getLyrics = function(){
 			return lyrics_all;
 		}
-		_prototype.getLyric = function(idx){
+		_proto.getLyric = function(idx){
 			try{
 				return lyrics_all[idx];
 			}catch(e){
 				return undefined;
 			}
 		}
-		_prototype.getIDTags = function(){
+		_proto.getIDTags = function(){
 			return meta_info;
 		}
-		_prototype.select = function(ts){
+		_proto.select = function(ts){
 			if (isNaN(ts)) {
 				return -1;
 			}

@@ -70,7 +70,6 @@
 						meta_info[String(ID_TAGS[j].name)] = String(value);
 					}
 				}
-				console.log(meta_info);
 				if (is_id_tag) {
 					continue;
 				}

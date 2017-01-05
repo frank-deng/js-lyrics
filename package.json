@@ -8,7 +8,7 @@
   },
   "scripts": {
 	"uglifyjs": "uglifyjs lyrics.js > lyrics.min.js",
-	"test-uncompressed": "qunit-cli -c lyrics.js ./test/qunit_test.js",
+	"test-uncompressed": "qunit-cli -c lyrics.js ./test/test.js",
 	"test": "qunit-cli -c lyrics.min.js ./test/qunit_test.js"
   },
   "repository": {

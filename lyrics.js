@@ -1,9 +1,20 @@
-(function(){
-	var isBrowser = function(){try {return this===window;}catch(e){ return false;}}
-	var _root = isBrowser() ? window : global;
-	_root.Lyrics = function(text_lrc){
+(function(root, factory) {
+	'use strict';
+	if (typeof define === 'function' && define.amd) {
+		// AMD support.
+		define([], factory);
+	} else if (typeof exports === 'object') {
+		// NodeJS support.
+		module.exports = factory();
+	} else {
+		// Browser global support.
+		root.Lyrics = factory();
+	}
+}(this, function() {
+	'use strict';
+	var Lyrics = function(text_lrc){
 		/* Private */
-		var _prototype = _root.Lyrics.prototype;
+		var _prototype = Lyrics.prototype;
 		var timestamp_offset = 0;
 		var lyrics_all = undefined;
 		var meta_info = undefined;
@@ -138,4 +149,5 @@
 			this.load(text_lrc);
 		}
 	}
-})();
+	return Lyrics;
+}));

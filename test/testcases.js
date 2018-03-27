@@ -156,3 +156,27 @@ QUnit.test("Test Time Offset", function(assert) {
 	assert.deepEqual(lrc.getLyric(lrc.select(1)), {timestamp:2,text:'Three'});
 	assert.deepEqual(lrc.getIDTags(), {offset:1000});
 });
+QUnit.test("Test Multiple Instances of Lyrics()", function(assert){
+	var lrc_1 = new Lyrics('[00:04.050] firstLine');
+	var lrc_2 = new Lyrics('[00:04.050] secondLine');
+	assert.deepEqual(lrc_1.getLyrics(), [{timestamp:4.05,text:'firstLine'}]);
+	assert.deepEqual(lrc_2.getLyrics(), [{timestamp:4.05,text:'secondLine'}]);
+	assert.strictEqual(lrc_1.getLyric(lrc_1.select(3)), undefined);
+	assert.deepEqual(lrc_1.getLyric(lrc_1.select(4.1)), {timestamp:4.05,text:'firstLine'});
+	assert.strictEqual(lrc_2.getLyric(lrc_2.select(3)), undefined);
+	assert.deepEqual(lrc_2.getLyric(lrc_2.select(4.1)), {timestamp:4.05,text:'secondLine'});
+});
+QUnit.test("Test Multiple Instances of Lyrics()", function(assert){
+	var lrc_1 = new Lyrics(sample_complex);
+	var lrc_2 = new Lyrics(sample_complex_chinese);
+
+	assert.deepEqual(lrc_1.getLyric(0), {timestamp:27.540,text:'Ah! ほのかな予感から始まり'});
+	assert.deepEqual(lrc_1.getLyric(4), {timestamp:49.160,text:''});
+	assert.deepEqual(lrc_2.getLyric(0), {timestamp:27.540,text:'Ah！由微小的预感拉开序幕'});
+	assert.deepEqual(lrc_2.getLyric(4), {timestamp:49.160,text:''});
+
+	assert.deepEqual(lrc_1.getLyric(4), {timestamp:49.160,text:''});
+	assert.deepEqual(lrc_2.getLyric(4), {timestamp:49.160,text:''});
+	assert.deepEqual(lrc_1.getLyric(0), {timestamp:27.540,text:'Ah! ほのかな予感から始まり'});
+	assert.deepEqual(lrc_2.getLyric(0), {timestamp:27.540,text:'Ah！由微小的预感拉开序幕'});
+});

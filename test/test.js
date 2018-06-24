@@ -144,6 +144,6 @@ test_time_offset_up = `[offset:1000]
 [00:01.000]Two
 [00:02.000]Three
 `
-root.Lyrics = require('../lyrics.js');
+global.Lyrics = require('../lyrics.js');
 require('./testcases.js');
 

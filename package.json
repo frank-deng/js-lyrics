@@ -1,6 +1,6 @@
 {
   "name": "lyrics.js",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A JavaScript for parsing LRC file and synchronize lyrics.",
   "main": "lyrics.js",
   "directories": {

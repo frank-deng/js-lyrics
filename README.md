@@ -32,6 +32,18 @@ Load `.lrc` file and replace previous loaded lyrics using the same parser object
 
 	lrc.load(LRC_text);
 
+Load `.lrc` file from URL:
+
+	var lrc = new Lyrics();
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('readystatechange', function(e){
+	    if (4==xhr.readyState && 200==xhr.status){
+	        lrc.load(xhr.responseText);
+	    }
+	});
+	xhr.open("GET", "/path/to/lyrics.lrc", true);
+	xhr.send(null);
+
 **PS**: To specify time offset for `.lrc` file, please add the following tag into your `.lrc` file:
 
 	[offset:t]
@@ -51,7 +63,7 @@ This method will return -1 when the time given is ahead the first lyric's time o
 	var lrc = new Lyrics(LRC_text);
 	document.getElementById('audio_player').addEventListener('timeupdate', function(){
 		//Unhighlight all the lyrics
-		var lyric_selected = lyrics_container.querySelectorAll('[selected]');
+		var lyric_selected = lyrics_container.querySelectorAll('p[selected]');
 		for (var i = 0; i < lyric_selected.length; i++) {
 			lyric_selected[i].removeAttribute('selected');
 		}
@@ -61,7 +73,7 @@ This method will return -1 when the time given is ahead the first lyric's time o
 
 		//Highlight the lyric
 		if (lyric_selected != undefined && lyric_selected >= 0) {
-			lyric_selected.setAttribute('selected', 'selected');
+			lyrics_container.querySelectorAll('p')[lyric_selected].setAttribute('selected', 'selected');
 		}
 	});
 
@@ -109,6 +121,18 @@ js-lyrics
 
 	lrc.load(LRC_text);
 
+从URL加载`.lrc`文件：
+
+	var lrc = new Lyrics();
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('readystatechange', function(e){
+	    if (4==xhr.readyState && 200==xhr.status){
+	        lrc.load(xhr.responseText);
+	    }
+	});
+	xhr.open("GET", "/path/to/lyrics.lrc", true);
+	xhr.send(null);
+
 **PS**：如果需要为`.lrc`指定时间偏移量，请在`.lrc`文件中加上如下标签：
 
 	[offset:t]
@@ -128,7 +152,7 @@ js-lyrics
 	var lrc = new Lyrics(LRC_text);
 	document.getElementById('audio_player').addEventListener('timeupdate', function(){
 		//所有歌词取消高亮
-		var lyric_selected = lyrics_container.querySelectorAll('[selected]');
+		var lyric_selected = lyrics_container.querySelectorAll('p[selected]');
 		for (var i = 0; i < lyric_selected.length; i++) {
 			lyric_selected[i].removeAttribute('selected');
 		}
@@ -138,7 +162,7 @@ js-lyrics
 
 		//高亮歌词（如果有）
 		if (lyric_selected != undefined && lyric_selected >= 0) {
-			lyric_selected.setAttribute('selected', 'selected');
+			lyrics_container.querySelectorAll('p')[lyric_selected].setAttribute('selected', 'selected');
 		}
 	});
 
